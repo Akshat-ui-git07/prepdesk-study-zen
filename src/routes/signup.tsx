@@ -172,6 +172,7 @@ function Signup() {
             autoComplete="new-password"
           />
         </Field>
+        <PasswordRequirements password={form.password} />
 
         <button
           type="submit"
