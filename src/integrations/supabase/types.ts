@@ -14,16 +14,411 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chapters: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          number: number
+          subject_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          number: number
+          subject_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          number?: number
+          subject_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contributions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          status: string
+          student_id: string
+          type: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          status?: string
+          student_id: string
+          type: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          student_id?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      exam_schedule: {
+        Row: {
+          created_at: string
+          date: string
+          exam_name: string
+          id: string
+          subject_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          exam_name: string
+          id?: string
+          subject_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          exam_name?: string
+          id?: string
+          subject_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_schedule_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      formula_sheets: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          file_url: string
+          id: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          file_url: string
+          id?: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          file_url?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "formula_sheets_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      important_questions: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          difficulty: string
+          id: string
+          question: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          question: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "important_questions_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          used_by?: string | null
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          file_url: string
+          id: string
+          title: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          file_url: string
+          id?: string
+          title: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          file_url?: string
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      one_pagers: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          file_url: string
+          id: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          file_url: string
+          id?: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          file_url?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "one_pagers_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      past_papers: {
+        Row: {
+          created_at: string
+          file_url: string
+          id: string
+          school_name: string
+          subject_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          file_url: string
+          id?: string
+          school_name: string
+          subject_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          file_url?: string
+          id?: string
+          school_name?: string
+          subject_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "past_papers_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      practice_papers: {
+        Row: {
+          created_at: string
+          id: string
+          questions_json: Json
+          subject_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          questions_json?: Json
+          subject_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          questions_json?: Json
+          subject_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_papers_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          invite_code_used: string | null
+          name: string
+          section: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          invite_code_used?: string | null
+          name: string
+          section: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invite_code_used?: string | null
+          name?: string
+          section?: string
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      worksheets: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          file_url: string
+          id: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          file_url: string
+          id?: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          file_url?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worksheets_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +545,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "student"],
+    },
   },
 } as const
