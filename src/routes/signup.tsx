@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -21,6 +21,7 @@ const schema = z.object({
 function Signup() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({ name: "", section: "A", invite_code: "", email: "", password: "" });
 
   const submit = async (e: React.FormEvent) => {
@@ -50,7 +51,7 @@ function Signup() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
@@ -68,9 +69,36 @@ function Signup() {
       toast.error(error.message);
       return;
     }
-    toast.success("Welcome to Prepdesk!");
-    nav({ to: "/home" });
+
+    if (data.session) {
+      // Auto-confirmed: session is active, go to app
+      toast.success("Welcome to Prepdesk!");
+      nav({ to: "/home" });
+    } else {
+      // Email confirmation required
+      setSuccess(true);
+    }
   };
+
+  if (success) {
+    return (
+      <main className="min-h-screen px-6 pt-8 pb-16 max-w-md mx-auto flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-glow mb-6">
+          <MailCheck className="h-8 w-8 text-primary-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight mb-2">Account created!</h1>
+        <p className="text-muted-foreground text-sm max-w-xs mb-8">
+          Check your email to confirm your account, then come back and sign in.
+        </p>
+        <Link
+          to="/login"
+          className="w-full h-14 rounded-2xl gradient-primary text-primary-foreground font-semibold shadow-glow active:scale-[0.98] transition-all flex items-center justify-center"
+        >
+          Go to Sign In
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen px-6 pt-8 pb-16 max-w-md mx-auto">
