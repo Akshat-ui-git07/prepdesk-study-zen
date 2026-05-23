@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Loader2, MailCheck } from "lucide-react";
+import { ArrowLeft, Loader2, MailCheck, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -172,6 +172,7 @@ function Signup() {
             autoComplete="new-password"
           />
         </Field>
+        <PasswordRequirements password={form.password} />
 
         <button
           type="submit"
@@ -200,5 +201,76 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <span className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">{label}</span>
       {children}
     </label>
+  );
+}
+
+/* ─── Password helper components ─── */
+
+type Req = { label: string; met: boolean };
+
+function PasswordRequirements({ password }: { password: string }) {
+  const reqs: Req[] = [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "Contains a letter", met: /[A-Za-z]/.test(password) },
+    { label: "Contains a number", met: /\d/.test(password) },
+  ];
+
+  const strength = useMemo(() => {
+    let score = 0;
+    if (password.length >= 8) score += 1;
+    if (password.length >= 12) score += 1;
+    if (/[A-Za-z]/.test(password)) score += 1;
+    if (/\d/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+    if (score <= 2) return { label: "Weak", color: "bg-destructive", width: "w-[30%]" };
+    if (score <= 4) return { label: "Okay", color: "bg-warning", width: "w-[65%]" };
+    return { label: "Strong", color: "bg-success", width: "w-full" };
+  }, [password]);
+
+  return (
+    <div className="space-y-3 animate-[fade-in_0.3s_ease-out]">
+      {/* requirement pills */}
+      <div className="flex flex-wrap gap-2">
+        {reqs.map((r) => (
+          <span
+            key={r.label}
+            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-md border transition-colors ${
+              r.met
+                ? "border-success/30 text-success bg-success/10"
+                : "border-border text-muted-foreground bg-surface"
+            }`}
+          >
+            {r.met ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+            {r.label}
+          </span>
+        ))}
+      </div>
+
+      {/* strength bar */}
+      {password.length > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Strength</span>
+            <span
+              className={`font-semibold ${
+                strength.label === "Weak"
+                  ? "text-destructive"
+                  : strength.label === "Okay"
+                    ? "text-warning"
+                    : "text-success"
+              }`}
+            >
+              {strength.label}
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-surface-elevated overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-300 ease-out ${strength.color} ${strength.width}`}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
