@@ -10,28 +10,40 @@ export const Route = createFileRoute("/_app/home")({
 
 type Profile = { name: string; section: string };
 
+type NextExam = { exam_name: string; date: string };
+
 function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<{ chapters: number; papers: number } | null>(null);
+  const [nextExam, setNextExam] = useState<NextExam | null | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const [{ data: p }, { count: cCount }, { count: pCount }] = await Promise.all([
+      const nowIso = new Date().toISOString();
+      const [{ data: p }, { count: cCount }, { count: pCount }, { data: exam }] = await Promise.all([
         supabase.from("profiles").select("name, section").eq("id", user.id).maybeSingle(),
         supabase.from("chapters").select("*", { count: "exact", head: true }),
         supabase.from("practice_papers").select("*", { count: "exact", head: true }),
+        supabase
+          .from("exam_schedule")
+          .select("exam_name, date")
+          .gte("date", nowIso)
+          .order("date", { ascending: true })
+          .limit(1)
+          .maybeSingle(),
       ]);
       setProfile(p);
       setStats({ chapters: cCount ?? 0, papers: pCount ?? 0 });
+      setNextExam(exam ?? null);
     })();
   }, []);
 
-  // Demo exam target: ~60 days from now (replace with exam_schedule query later)
-  const examDate = new Date();
-  examDate.setDate(examDate.getDate() + 60);
-  const daysLeft = Math.max(0, Math.ceil((examDate.getTime() - Date.now()) / 86400000));
+  const examDate = nextExam ? new Date(nextExam.date) : null;
+  const daysLeft = examDate
+    ? Math.max(0, Math.ceil((examDate.getTime() - Date.now()) / 86400000))
+    : null;
 
   return (
     <main className="px-5 pt-10 pb-6 animate-[fade-in_0.4s_ease-out]">
@@ -57,24 +69,44 @@ function Home() {
       {/* Exam countdown */}
       <section className="relative overflow-hidden rounded-3xl gradient-primary p-6 shadow-elevated">
         <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-        <div className="relative flex items-center justify-between">
-          <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 uppercase tracking-wider">
-              <Flame className="h-3.5 w-3.5" /> Next milestone
+        <div className="relative">
+          {nextExam === undefined ? (
+            <>
+              <Skeleton className="h-3 w-24 bg-white/20" />
+              <Skeleton className="h-4 w-32 mt-3 bg-white/20" />
+              <Skeleton className="h-12 w-40 mt-3 bg-white/20" />
+            </>
+          ) : nextExam === null ? (
+            <>
+              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 uppercase tracking-wider">
+                <Flame className="h-3.5 w-3.5" /> Exam schedule
+              </div>
+              <p className="mt-3 text-white text-base font-medium">No upcoming exams scheduled</p>
+              <p className="mt-1 text-white/70 text-xs">Check back once new dates are added.</p>
+            </>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 uppercase tracking-wider">
+                  <Flame className="h-3.5 w-3.5" /> Next exam
+                </div>
+                <p className="mt-2 text-white text-sm">{nextExam.exam_name}</p>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-5xl font-bold text-white tracking-tight" style={{ fontFamily: "Sora" }}>
+                    {daysLeft}
+                  </span>
+                  <span className="text-white/80 text-sm">
+                    {daysLeft === 0 ? "today" : daysLeft === 1 ? "day left" : "days left"}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-white/70">
+                  {examDate!.toLocaleDateString(undefined, { day: "numeric", month: "short" })}
+                </p>
+              </div>
             </div>
-            <p className="mt-2 text-white text-sm">Half-yearly exams</p>
-            <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-5xl font-bold text-white tracking-tight" style={{ fontFamily: "Sora" }}>
-                {daysLeft}
-              </span>
-              <span className="text-white/80 text-sm">days left</span>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-white/70">
-              {examDate.toLocaleDateString(undefined, { day: "numeric", month: "short" })}
-            </p>
-          </div>
+          )}
         </div>
       </section>
 
