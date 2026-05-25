@@ -61,8 +61,13 @@ function Home() {
             <Skeleton className="h-7 w-44 mt-1" />
           )}
         </div>
-        <div className="h-11 w-11 rounded-full gradient-primary grid place-items-center text-primary-foreground font-semibold shadow-glow">
-          {profile?.name?.[0]?.toUpperCase() ?? "·"}
+        <div className="flex flex-col items-end gap-1.5">
+          <p className="text-xs text-muted-foreground" style={{ fontFamily: "DM Sans, system-ui" }}>
+            {new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+          </p>
+          <div className="h-11 w-11 rounded-full gradient-primary grid place-items-center text-primary-foreground font-semibold shadow-glow">
+            {profile?.name?.[0]?.toUpperCase() ?? "·"}
+          </div>
         </div>
       </header>
 
