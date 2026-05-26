@@ -1,8 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/Skeleton";
-import { LogOut } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/_app/profile")({
   component: Profile,
@@ -12,14 +12,19 @@ function Profile() {
   const nav = useNavigate();
   const [profile, setProfile] = useState<{ name: string; section: string; invite_code_used: string | null } | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       setEmail(user.email ?? "");
-      const { data } = await supabase.from("profiles").select("name, section, invite_code_used").eq("id", user.id).maybeSingle();
+      const [{ data }, { data: roles }] = await Promise.all([
+        supabase.from("profiles").select("name, section, invite_code_used").eq("id", user.id).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", user.id),
+      ]);
       setProfile(data);
+      setIsAdmin(!!roles?.some((r) => r.role === "admin"));
     })();
   }, []);
 
@@ -61,9 +66,18 @@ function Profile() {
         </div>
       )}
 
+      {isAdmin && (
+        <Link
+          to="/admin/subjects"
+          className="mt-4 w-full h-12 rounded-2xl gradient-primary text-primary-foreground font-medium flex items-center justify-center gap-2 shadow-glow active:scale-[0.99] transition-all"
+        >
+          <Shield className="h-4 w-4" /> Open admin panel
+        </Link>
+      )}
+
       <button
         onClick={signOut}
-        className="mt-6 w-full h-12 rounded-2xl bg-surface border border-border text-destructive font-medium flex items-center justify-center gap-2 hover:bg-surface-elevated transition-all"
+        className="mt-4 w-full h-12 rounded-2xl bg-surface border border-border text-destructive font-medium flex items-center justify-center gap-2 hover:bg-surface-elevated transition-all"
       >
         <LogOut className="h-4 w-4" /> Sign out
       </button>
