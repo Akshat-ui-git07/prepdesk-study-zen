@@ -14,6 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminPanelRouteImport } from './routes/admin/_panel'
 import { Route as AppSubjectsRouteImport } from './routes/_app/subjects'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppPracticeRouteImport } from './routes/_app/practice'
@@ -44,6 +46,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPanelRoute = AdminPanelRouteImport.update({
+  id: '/_panel',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppSubjectsRoute = AppSubjectsRouteImport.update({
   id: '/subjects',
   path: '/subjects',
@@ -72,7 +83,7 @@ const AppContributeRoute = AppContributeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminPanelRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/contribute': typeof AppContributeRoute
@@ -80,10 +91,10 @@ export interface FileRoutesByFullPath {
   '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
   '/subjects': typeof AppSubjectsRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/contribute': typeof AppContributeRoute
@@ -91,12 +102,13 @@ export interface FileRoutesByTo {
   '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
   '/subjects': typeof AppSubjectsRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_app/contribute': typeof AppContributeRoute
@@ -104,6 +116,8 @@ export interface FileRoutesById {
   '/_app/practice': typeof AppPracticeRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/subjects': typeof AppSubjectsRoute
+  '/admin/_panel': typeof AdminPanelRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,10 +131,10 @@ export interface FileRouteTypes {
     | '/practice'
     | '/profile'
     | '/subjects'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/login'
     | '/signup'
     | '/contribute'
@@ -128,6 +142,7 @@ export interface FileRouteTypes {
     | '/practice'
     | '/profile'
     | '/subjects'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -140,12 +155,14 @@ export interface FileRouteTypes {
     | '/_app/practice'
     | '/_app/profile'
     | '/_app/subjects'
+    | '/admin/_panel'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
 }
@@ -186,6 +203,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_panel': {
+      id: '/admin/_panel'
+      path: ''
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminPanelRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_app/subjects': {
       id: '/_app/subjects'
@@ -243,10 +274,22 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AdminRouteChildren {
+  AdminPanelRoute: typeof AdminPanelRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminPanelRoute: AdminPanelRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
 }
