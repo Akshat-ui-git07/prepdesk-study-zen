@@ -45,7 +45,7 @@ export function ResourceManager({
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? true });
     const { data, error } = await q;
     if (error) { toast.error(error.message); return; }
-    setRows((data ?? []) as Row[]);
+    setRows((data ?? []) as unknown as Row[]);
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [table]);
