@@ -23,6 +23,7 @@ import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppContributeRouteImport } from './routes/_app/contribute'
 import { Route as AdminPanelWorksheetsRouteImport } from './routes/admin/_panel/worksheets'
 import { Route as AdminPanelSubjectsRouteImport } from './routes/admin/_panel/subjects'
+import { Route as AdminPanelStudentsRouteImport } from './routes/admin/_panel/students'
 import { Route as AdminPanelPracticePapersRouteImport } from './routes/admin/_panel/practice-papers'
 import { Route as AdminPanelPastPapersRouteImport } from './routes/admin/_panel/past-papers'
 import { Route as AdminPanelOnePagersRouteImport } from './routes/admin/_panel/one-pagers'
@@ -31,6 +32,7 @@ import { Route as AdminPanelInviteCodesRouteImport } from './routes/admin/_panel
 import { Route as AdminPanelImportantQuestionsRouteImport } from './routes/admin/_panel/important-questions'
 import { Route as AdminPanelFormulaSheetsRouteImport } from './routes/admin/_panel/formula-sheets'
 import { Route as AdminPanelExamScheduleRouteImport } from './routes/admin/_panel/exam-schedule'
+import { Route as AdminPanelDashboardRouteImport } from './routes/admin/_panel/dashboard'
 import { Route as AdminPanelContributionsRouteImport } from './routes/admin/_panel/contributions'
 import { Route as AdminPanelChaptersRouteImport } from './routes/admin/_panel/chapters'
 
@@ -102,6 +104,11 @@ const AdminPanelSubjectsRoute = AdminPanelSubjectsRouteImport.update({
   path: '/subjects',
   getParentRoute: () => AdminPanelRoute,
 } as any)
+const AdminPanelStudentsRoute = AdminPanelStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AdminPanelRoute,
+} as any)
 const AdminPanelPracticePapersRoute =
   AdminPanelPracticePapersRouteImport.update({
     id: '/practice-papers',
@@ -144,6 +151,11 @@ const AdminPanelExamScheduleRoute = AdminPanelExamScheduleRouteImport.update({
   path: '/exam-schedule',
   getParentRoute: () => AdminPanelRoute,
 } as any)
+const AdminPanelDashboardRoute = AdminPanelDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminPanelRoute,
+} as any)
 const AdminPanelContributionsRoute = AdminPanelContributionsRouteImport.update({
   id: '/contributions',
   path: '/contributions',
@@ -168,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
   '/admin/contributions': typeof AdminPanelContributionsRoute
+  '/admin/dashboard': typeof AdminPanelDashboardRoute
   '/admin/exam-schedule': typeof AdminPanelExamScheduleRoute
   '/admin/formula-sheets': typeof AdminPanelFormulaSheetsRoute
   '/admin/important-questions': typeof AdminPanelImportantQuestionsRoute
@@ -176,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/one-pagers': typeof AdminPanelOnePagersRoute
   '/admin/past-papers': typeof AdminPanelPastPapersRoute
   '/admin/practice-papers': typeof AdminPanelPracticePapersRoute
+  '/admin/students': typeof AdminPanelStudentsRoute
   '/admin/subjects': typeof AdminPanelSubjectsRoute
   '/admin/worksheets': typeof AdminPanelWorksheetsRoute
 }
@@ -191,6 +205,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
   '/admin/contributions': typeof AdminPanelContributionsRoute
+  '/admin/dashboard': typeof AdminPanelDashboardRoute
   '/admin/exam-schedule': typeof AdminPanelExamScheduleRoute
   '/admin/formula-sheets': typeof AdminPanelFormulaSheetsRoute
   '/admin/important-questions': typeof AdminPanelImportantQuestionsRoute
@@ -199,6 +214,7 @@ export interface FileRoutesByTo {
   '/admin/one-pagers': typeof AdminPanelOnePagersRoute
   '/admin/past-papers': typeof AdminPanelPastPapersRoute
   '/admin/practice-papers': typeof AdminPanelPracticePapersRoute
+  '/admin/students': typeof AdminPanelStudentsRoute
   '/admin/subjects': typeof AdminPanelSubjectsRoute
   '/admin/worksheets': typeof AdminPanelWorksheetsRoute
 }
@@ -218,6 +234,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/admin/_panel/chapters': typeof AdminPanelChaptersRoute
   '/admin/_panel/contributions': typeof AdminPanelContributionsRoute
+  '/admin/_panel/dashboard': typeof AdminPanelDashboardRoute
   '/admin/_panel/exam-schedule': typeof AdminPanelExamScheduleRoute
   '/admin/_panel/formula-sheets': typeof AdminPanelFormulaSheetsRoute
   '/admin/_panel/important-questions': typeof AdminPanelImportantQuestionsRoute
@@ -226,6 +243,7 @@ export interface FileRoutesById {
   '/admin/_panel/one-pagers': typeof AdminPanelOnePagersRoute
   '/admin/_panel/past-papers': typeof AdminPanelPastPapersRoute
   '/admin/_panel/practice-papers': typeof AdminPanelPracticePapersRoute
+  '/admin/_panel/students': typeof AdminPanelStudentsRoute
   '/admin/_panel/subjects': typeof AdminPanelSubjectsRoute
   '/admin/_panel/worksheets': typeof AdminPanelWorksheetsRoute
 }
@@ -244,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/chapters'
     | '/admin/contributions'
+    | '/admin/dashboard'
     | '/admin/exam-schedule'
     | '/admin/formula-sheets'
     | '/admin/important-questions'
@@ -252,6 +271,7 @@ export interface FileRouteTypes {
     | '/admin/one-pagers'
     | '/admin/past-papers'
     | '/admin/practice-papers'
+    | '/admin/students'
     | '/admin/subjects'
     | '/admin/worksheets'
   fileRoutesByTo: FileRoutesByTo
@@ -267,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/chapters'
     | '/admin/contributions'
+    | '/admin/dashboard'
     | '/admin/exam-schedule'
     | '/admin/formula-sheets'
     | '/admin/important-questions'
@@ -275,6 +296,7 @@ export interface FileRouteTypes {
     | '/admin/one-pagers'
     | '/admin/past-papers'
     | '/admin/practice-papers'
+    | '/admin/students'
     | '/admin/subjects'
     | '/admin/worksheets'
   id:
@@ -293,6 +315,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/_panel/chapters'
     | '/admin/_panel/contributions'
+    | '/admin/_panel/dashboard'
     | '/admin/_panel/exam-schedule'
     | '/admin/_panel/formula-sheets'
     | '/admin/_panel/important-questions'
@@ -301,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/_panel/one-pagers'
     | '/admin/_panel/past-papers'
     | '/admin/_panel/practice-papers'
+    | '/admin/_panel/students'
     | '/admin/_panel/subjects'
     | '/admin/_panel/worksheets'
   fileRoutesById: FileRoutesById
@@ -413,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPanelSubjectsRouteImport
       parentRoute: typeof AdminPanelRoute
     }
+    '/admin/_panel/students': {
+      id: '/admin/_panel/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminPanelStudentsRouteImport
+      parentRoute: typeof AdminPanelRoute
+    }
     '/admin/_panel/practice-papers': {
       id: '/admin/_panel/practice-papers'
       path: '/practice-papers'
@@ -469,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPanelExamScheduleRouteImport
       parentRoute: typeof AdminPanelRoute
     }
+    '/admin/_panel/dashboard': {
+      id: '/admin/_panel/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminPanelDashboardRouteImport
+      parentRoute: typeof AdminPanelRoute
+    }
     '/admin/_panel/contributions': {
       id: '/admin/_panel/contributions'
       path: '/contributions'
@@ -507,6 +545,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 interface AdminPanelRouteChildren {
   AdminPanelChaptersRoute: typeof AdminPanelChaptersRoute
   AdminPanelContributionsRoute: typeof AdminPanelContributionsRoute
+  AdminPanelDashboardRoute: typeof AdminPanelDashboardRoute
   AdminPanelExamScheduleRoute: typeof AdminPanelExamScheduleRoute
   AdminPanelFormulaSheetsRoute: typeof AdminPanelFormulaSheetsRoute
   AdminPanelImportantQuestionsRoute: typeof AdminPanelImportantQuestionsRoute
@@ -515,6 +554,7 @@ interface AdminPanelRouteChildren {
   AdminPanelOnePagersRoute: typeof AdminPanelOnePagersRoute
   AdminPanelPastPapersRoute: typeof AdminPanelPastPapersRoute
   AdminPanelPracticePapersRoute: typeof AdminPanelPracticePapersRoute
+  AdminPanelStudentsRoute: typeof AdminPanelStudentsRoute
   AdminPanelSubjectsRoute: typeof AdminPanelSubjectsRoute
   AdminPanelWorksheetsRoute: typeof AdminPanelWorksheetsRoute
 }
@@ -522,6 +562,7 @@ interface AdminPanelRouteChildren {
 const AdminPanelRouteChildren: AdminPanelRouteChildren = {
   AdminPanelChaptersRoute: AdminPanelChaptersRoute,
   AdminPanelContributionsRoute: AdminPanelContributionsRoute,
+  AdminPanelDashboardRoute: AdminPanelDashboardRoute,
   AdminPanelExamScheduleRoute: AdminPanelExamScheduleRoute,
   AdminPanelFormulaSheetsRoute: AdminPanelFormulaSheetsRoute,
   AdminPanelImportantQuestionsRoute: AdminPanelImportantQuestionsRoute,
@@ -530,6 +571,7 @@ const AdminPanelRouteChildren: AdminPanelRouteChildren = {
   AdminPanelOnePagersRoute: AdminPanelOnePagersRoute,
   AdminPanelPastPapersRoute: AdminPanelPastPapersRoute,
   AdminPanelPracticePapersRoute: AdminPanelPracticePapersRoute,
+  AdminPanelStudentsRoute: AdminPanelStudentsRoute,
   AdminPanelSubjectsRoute: AdminPanelSubjectsRoute,
   AdminPanelWorksheetsRoute: AdminPanelWorksheetsRoute,
 }
