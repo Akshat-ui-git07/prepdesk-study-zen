@@ -72,48 +72,83 @@ function Home() {
       </header>
 
       {/* Exam countdown */}
-      <section className="relative overflow-hidden rounded-3xl gradient-primary p-6 shadow-elevated">
-        <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+      <section
+        className="relative overflow-hidden rounded-2xl p-8 shadow-elevated"
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.55 0.22 255) 0%, oklch(0.48 0.24 270) 60%, oklch(0.42 0.20 285) 100%)",
+        }}
+      >
+        <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-white/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+
         <div className="relative">
           {nextExam === undefined ? (
             <>
               <Skeleton className="h-3 w-24 bg-white/20" />
-              <Skeleton className="h-4 w-32 mt-3 bg-white/20" />
-              <Skeleton className="h-12 w-40 mt-3 bg-white/20" />
+              <Skeleton className="h-20 w-44 mt-4 bg-white/20" />
+              <Skeleton className="h-4 w-56 mt-3 bg-white/20" />
             </>
           ) : nextExam === null ? (
-            <>
-              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 uppercase tracking-wider">
+            <div className="py-2">
+              <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-white/80 uppercase tracking-[0.15em]">
                 <Flame className="h-3.5 w-3.5" /> Exam schedule
               </div>
-              <p className="mt-3 text-white text-base font-medium">No upcoming exams scheduled</p>
-              <p className="mt-1 text-white/70 text-xs">Check back once new dates are added.</p>
-            </>
+              <p className="mt-4 text-white text-xl font-semibold tracking-tight" style={{ fontFamily: "Sora" }}>
+                No upcoming exams scheduled
+              </p>
+              <p className="mt-1.5 text-white/70 text-sm">Check back once new dates are added.</p>
+            </div>
           ) : (
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 uppercase tracking-wider">
+            <>
+              <div className="flex items-start justify-between gap-4">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-white/80 uppercase tracking-[0.15em]">
                   <Flame className="h-3.5 w-3.5" /> Next exam
                 </div>
-                <p className="mt-2 text-white text-sm">{nextExam.exam_name}</p>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-white tracking-tight" style={{ fontFamily: "Sora" }}>
-                    {daysLeft}
-                  </span>
-                  <span className="text-white/80 text-sm">
-                    {daysLeft === 0 ? "today" : daysLeft === 1 ? "day left" : "days left"}
-                  </span>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-white/70">
-                  {examDate!.toLocaleDateString(undefined, { day: "numeric", month: "short" })}
+                <p
+                  className="text-xs text-white/85 whitespace-nowrap"
+                  style={{ fontFamily: "DM Sans, system-ui" }}
+                >
+                  {examDate!.toLocaleDateString("en-GB", {
+                    weekday: "short", day: "numeric", month: "short", year: "numeric",
+                  })}
                 </p>
               </div>
-            </div>
+
+              <div className="mt-5 flex items-baseline gap-3">
+                <span
+                  className="text-6xl font-bold text-white tracking-tight leading-none"
+                  style={{ fontFamily: "Sora" }}
+                >
+                  {daysLeft}
+                </span>
+                <span className="text-white/85 text-sm font-medium">
+                  {daysLeft === 0
+                    ? `today — ${nextExam.exam_name}`
+                    : `${daysLeft === 1 ? "day" : "days"} until ${nextExam.exam_name}`}
+                </span>
+              </div>
+
+              {/* Proximity bar */}
+              <div className="mt-7">
+                <div className="h-1 w-full rounded-full bg-white/15 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-white/90 transition-all duration-700"
+                    style={{
+                      width: `${Math.min(100, Math.max(4, 100 - (daysLeft! / 60) * 100))}%`,
+                    }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-white/60">
+                  <span>Today</span>
+                  <span>Exam day</span>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </section>
+
 
       {/* Stats */}
       <section className="grid grid-cols-2 gap-3 mt-4">
