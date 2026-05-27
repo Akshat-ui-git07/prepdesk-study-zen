@@ -33,23 +33,17 @@ function Signup() {
     }
     setLoading(true);
 
-    // Validate invite code
-    const { data: invite } = await supabase
-      .from("invite_codes")
-      .select("id, used_by")
-      .eq("code", parsed.data.invite_code)
-      .maybeSingle();
+    // Validate invite code via secure RPC (does not expose other codes)
+    const { data: isValid, error: rpcError } = await supabase.rpc("validate_invite_code", {
+      _code: parsed.data.invite_code,
+    });
 
-    if (!invite) {
-      toast.error("Invalid invite code");
+    if (rpcError || !isValid) {
+      toast.error("Invalid or already-used invite code");
       setLoading(false);
       return;
     }
-    if (invite.used_by) {
-      toast.error("This invite code has already been used");
-      setLoading(false);
-      return;
-    }
+
 
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
