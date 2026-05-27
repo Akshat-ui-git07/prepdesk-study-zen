@@ -2,9 +2,9 @@ import { createFileRoute, Link, Outlet, redirect, useNavigate, useRouterState } 
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  BookMarked, BookOpen, Calendar, FileText, FlaskConical, GraduationCap,
-  HelpCircle, KeyRound, LayoutGrid, ListChecks, LogOut, MessageSquare,
-  Shield, Sparkles, StickyNote,
+  BookMarked, BookOpen, Calendar, ChevronDown, FileText, FlaskConical,
+  GraduationCap, HelpCircle, KeyRound, LayoutDashboard, LayoutGrid, ListChecks,
+  LogOut, MessageSquare, Shield, Sparkles, StickyNote, Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/admin/_panel")({
   component: AdminPanel,
 });
 
-const nav = [
+const contentItems = [
   { to: "/admin/subjects", label: "Subjects", icon: LayoutGrid },
   { to: "/admin/chapters", label: "Chapters", icon: BookOpen },
   { to: "/admin/notes", label: "Notes", icon: StickyNote },
@@ -30,16 +30,33 @@ const nav = [
   { to: "/admin/important-questions", label: "Important questions", icon: HelpCircle },
   { to: "/admin/past-papers", label: "Past papers", icon: BookMarked },
   { to: "/admin/practice-papers", label: "Practice papers", icon: GraduationCap },
-  { to: "/admin/exam-schedule", label: "Exam schedule", icon: Calendar },
+] as const;
+
+const topItems = [
+  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/invite-codes", label: "Invite codes", icon: KeyRound },
+] as const;
+
+const bottomItems = [
   { to: "/admin/contributions", label: "Contributions", icon: MessageSquare },
+  { to: "/admin/exam-schedule", label: "Exam schedule", icon: Calendar },
+  { to: "/admin/students", label: "Students", icon: Users },
+] as const;
+
+const allMobile = [
+  ...topItems,
+  ...contentItems,
+  ...bottomItems,
 ] as const;
 
 function AdminPanel() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [email, setEmail] = useState<string>("");
+  const contentActive = contentItems.some((i) => pathname.startsWith(i.to));
+  const [contentOpen, setContentOpen] = useState(contentActive);
 
+  useEffect(() => { if (contentActive) setContentOpen(true); }, [contentActive]);
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
@@ -47,6 +64,22 @@ function AdminPanel() {
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate({ to: "/admin" });
+  };
+
+  const NavLink = ({ to, label, icon: Icon }: { to: string; label: string; icon: any }) => {
+    const active = pathname === to || pathname.startsWith(to + "/");
+    return (
+      <Link
+        to={to}
+        className={cn(
+          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+          active ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-surface-elevated/60"
+        )}
+      >
+        <Icon className={cn("h-4 w-4", active && "text-primary")} />
+        {label}
+      </Link>
+    );
   };
 
   return (
@@ -64,24 +97,28 @@ function AdminPanel() {
           </div>
         </div>
         <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-          {nav.map(({ to, label, icon: Icon }) => {
-            const active = pathname.startsWith(to);
-            return (
-              <Link
-                key={to}
-                to={to}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                  active
-                    ? "bg-primary/15 text-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-surface-elevated/60"
-                )}
-              >
-                <Icon className={cn("h-4 w-4", active && "text-primary")} />
-                {label}
-              </Link>
-            );
-          })}
+          {topItems.map((i) => <NavLink key={i.to} {...i} />)}
+
+          <button
+            onClick={() => setContentOpen((v) => !v)}
+            className={cn(
+              "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+              contentActive ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-surface-elevated/60"
+            )}
+          >
+            <span className="flex items-center gap-3">
+              <BookOpen className={cn("h-4 w-4", contentActive && "text-primary")} />
+              Content
+            </span>
+            <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", contentOpen && "rotate-180")} />
+          </button>
+          {contentOpen && (
+            <div className="ml-3 pl-3 border-l border-border/60 space-y-0.5">
+              {contentItems.map((i) => <NavLink key={i.to} {...i} />)}
+            </div>
+          )}
+
+          {bottomItems.map((i) => <NavLink key={i.to} {...i} />)}
         </nav>
         <div className="border-t border-border/60 p-3 space-y-2">
           <Link to="/home" className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-surface-elevated/60">
@@ -110,8 +147,8 @@ function AdminPanel() {
         {/* Mobile horizontal nav */}
         <div className="md:hidden mt-14 overflow-x-auto border-b border-border/60 bg-surface/40 backdrop-blur">
           <div className="flex gap-1 px-3 py-2 w-max">
-            {nav.map(({ to, label, icon: Icon }) => {
-              const active = pathname.startsWith(to);
+            {allMobile.map(({ to, label, icon: Icon }) => {
+              const active = pathname === to;
               return (
                 <Link key={to} to={to} className={cn(
                   "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors",
