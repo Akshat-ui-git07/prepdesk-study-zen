@@ -33,7 +33,7 @@ function AdminLogin() {
       return;
     }
     toast.success("Welcome, admin");
-    nav({ to: "/admin/subjects" });
+    nav({ to: "/admin/dashboard" });
   };
 
   return (

@@ -68,7 +68,7 @@ function Profile() {
 
       {isAdmin && (
         <Link
-          to="/admin/subjects"
+          to="/admin/dashboard"
           className="mt-4 w-full h-12 rounded-2xl gradient-primary text-primary-foreground font-medium flex items-center justify-center gap-2 shadow-glow active:scale-[0.99] transition-all"
         >
           <Shield className="h-4 w-4" /> Open admin panel
