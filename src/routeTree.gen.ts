@@ -16,7 +16,6 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminPanelRouteImport } from './routes/admin/_panel'
-import { Route as AppSubjectsRouteImport } from './routes/_app/subjects'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppPracticeRouteImport } from './routes/_app/practice'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
@@ -68,11 +67,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const AdminPanelRoute = AdminPanelRouteImport.update({
   id: '/_panel',
   getParentRoute: () => AdminRoute,
-} as any)
-const AppSubjectsRoute = AppSubjectsRouteImport.update({
-  id: '/subjects',
-  path: '/subjects',
-  getParentRoute: () => AppRoute,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
@@ -176,7 +170,6 @@ export interface FileRoutesByFullPath {
   '/home': typeof AppHomeRoute
   '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
-  '/subjects': typeof AppSubjectsRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
   '/admin/contributions': typeof AdminPanelContributionsRoute
@@ -201,7 +194,6 @@ export interface FileRoutesByTo {
   '/home': typeof AppHomeRoute
   '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
-  '/subjects': typeof AppSubjectsRoute
   '/admin': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
   '/admin/contributions': typeof AdminPanelContributionsRoute
@@ -229,7 +221,6 @@ export interface FileRoutesById {
   '/_app/home': typeof AppHomeRoute
   '/_app/practice': typeof AppPracticeRoute
   '/_app/profile': typeof AppProfileRoute
-  '/_app/subjects': typeof AppSubjectsRoute
   '/admin/_panel': typeof AdminPanelRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/admin/_panel/chapters': typeof AdminPanelChaptersRoute
@@ -258,7 +249,6 @@ export interface FileRouteTypes {
     | '/home'
     | '/practice'
     | '/profile'
-    | '/subjects'
     | '/admin/'
     | '/admin/chapters'
     | '/admin/contributions'
@@ -283,7 +273,6 @@ export interface FileRouteTypes {
     | '/home'
     | '/practice'
     | '/profile'
-    | '/subjects'
     | '/admin'
     | '/admin/chapters'
     | '/admin/contributions'
@@ -310,7 +299,6 @@ export interface FileRouteTypes {
     | '/_app/home'
     | '/_app/practice'
     | '/_app/profile'
-    | '/_app/subjects'
     | '/admin/_panel'
     | '/admin/'
     | '/admin/_panel/chapters'
@@ -387,13 +375,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AdminPanelRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/_app/subjects': {
-      id: '/_app/subjects'
-      path: '/subjects'
-      fullPath: '/subjects'
-      preLoaderRoute: typeof AppSubjectsRouteImport
-      parentRoute: typeof AppRoute
     }
     '/_app/profile': {
       id: '/_app/profile'
@@ -529,7 +510,6 @@ interface AppRouteChildren {
   AppHomeRoute: typeof AppHomeRoute
   AppPracticeRoute: typeof AppPracticeRoute
   AppProfileRoute: typeof AppProfileRoute
-  AppSubjectsRoute: typeof AppSubjectsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -537,7 +517,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppHomeRoute: AppHomeRoute,
   AppPracticeRoute: AppPracticeRoute,
   AppProfileRoute: AppProfileRoute,
-  AppSubjectsRoute: AppSubjectsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
