@@ -20,6 +20,7 @@ import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppPracticeRouteImport } from './routes/_app/practice'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppContributeRouteImport } from './routes/_app/contribute'
+import { Route as AppSubjectsIndexRouteImport } from './routes/_app/subjects.index'
 import { Route as AdminPanelWorksheetsRouteImport } from './routes/admin/_panel/worksheets'
 import { Route as AdminPanelSubjectsRouteImport } from './routes/admin/_panel/subjects'
 import { Route as AdminPanelStudentsRouteImport } from './routes/admin/_panel/students'
@@ -34,6 +35,8 @@ import { Route as AdminPanelExamScheduleRouteImport } from './routes/admin/_pane
 import { Route as AdminPanelDashboardRouteImport } from './routes/admin/_panel/dashboard'
 import { Route as AdminPanelContributionsRouteImport } from './routes/admin/_panel/contributions'
 import { Route as AdminPanelChaptersRouteImport } from './routes/admin/_panel/chapters'
+import { Route as AppSubjectsSubjectIdIndexRouteImport } from './routes/_app/subjects.$subjectId.index'
+import { Route as AppSubjectsSubjectIdChapterIdRouteImport } from './routes/_app/subjects.$subjectId.$chapterId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -86,6 +89,11 @@ const AppHomeRoute = AppHomeRouteImport.update({
 const AppContributeRoute = AppContributeRouteImport.update({
   id: '/contribute',
   path: '/contribute',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSubjectsIndexRoute = AppSubjectsIndexRouteImport.update({
+  id: '/subjects/',
+  path: '/subjects/',
   getParentRoute: () => AppRoute,
 } as any)
 const AdminPanelWorksheetsRoute = AdminPanelWorksheetsRouteImport.update({
@@ -160,6 +168,18 @@ const AdminPanelChaptersRoute = AdminPanelChaptersRouteImport.update({
   path: '/chapters',
   getParentRoute: () => AdminPanelRoute,
 } as any)
+const AppSubjectsSubjectIdIndexRoute =
+  AppSubjectsSubjectIdIndexRouteImport.update({
+    id: '/subjects/$subjectId/',
+    path: '/subjects/$subjectId/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSubjectsSubjectIdChapterIdRoute =
+  AppSubjectsSubjectIdChapterIdRouteImport.update({
+    id: '/subjects/$subjectId/$chapterId',
+    path: '/subjects/$subjectId/$chapterId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -185,6 +205,9 @@ export interface FileRoutesByFullPath {
   '/admin/students': typeof AdminPanelStudentsRoute
   '/admin/subjects': typeof AdminPanelSubjectsRoute
   '/admin/worksheets': typeof AdminPanelWorksheetsRoute
+  '/subjects/': typeof AppSubjectsIndexRoute
+  '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -209,6 +232,9 @@ export interface FileRoutesByTo {
   '/admin/students': typeof AdminPanelStudentsRoute
   '/admin/subjects': typeof AdminPanelSubjectsRoute
   '/admin/worksheets': typeof AdminPanelWorksheetsRoute
+  '/subjects': typeof AppSubjectsIndexRoute
+  '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/subjects/$subjectId': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -237,6 +263,9 @@ export interface FileRoutesById {
   '/admin/_panel/students': typeof AdminPanelStudentsRoute
   '/admin/_panel/subjects': typeof AdminPanelSubjectsRoute
   '/admin/_panel/worksheets': typeof AdminPanelWorksheetsRoute
+  '/_app/subjects/': typeof AppSubjectsIndexRoute
+  '/_app/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/_app/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -264,6 +293,9 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/subjects'
     | '/admin/worksheets'
+    | '/subjects/'
+    | '/subjects/$subjectId/$chapterId'
+    | '/subjects/$subjectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -288,6 +320,9 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/subjects'
     | '/admin/worksheets'
+    | '/subjects'
+    | '/subjects/$subjectId/$chapterId'
+    | '/subjects/$subjectId'
   id:
     | '__root__'
     | '/'
@@ -315,6 +350,9 @@ export interface FileRouteTypes {
     | '/admin/_panel/students'
     | '/admin/_panel/subjects'
     | '/admin/_panel/worksheets'
+    | '/_app/subjects/'
+    | '/_app/subjects/$subjectId/$chapterId'
+    | '/_app/subjects/$subjectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -402,6 +440,13 @@ declare module '@tanstack/react-router' {
       path: '/contribute'
       fullPath: '/contribute'
       preLoaderRoute: typeof AppContributeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/subjects/': {
+      id: '/_app/subjects/'
+      path: '/subjects'
+      fullPath: '/subjects/'
+      preLoaderRoute: typeof AppSubjectsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/admin/_panel/worksheets': {
@@ -502,6 +547,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPanelChaptersRouteImport
       parentRoute: typeof AdminPanelRoute
     }
+    '/_app/subjects/$subjectId/': {
+      id: '/_app/subjects/$subjectId/'
+      path: '/subjects/$subjectId'
+      fullPath: '/subjects/$subjectId/'
+      preLoaderRoute: typeof AppSubjectsSubjectIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/subjects/$subjectId/$chapterId': {
+      id: '/_app/subjects/$subjectId/$chapterId'
+      path: '/subjects/$subjectId/$chapterId'
+      fullPath: '/subjects/$subjectId/$chapterId'
+      preLoaderRoute: typeof AppSubjectsSubjectIdChapterIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -510,6 +569,9 @@ interface AppRouteChildren {
   AppHomeRoute: typeof AppHomeRoute
   AppPracticeRoute: typeof AppPracticeRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppSubjectsIndexRoute: typeof AppSubjectsIndexRoute
+  AppSubjectsSubjectIdChapterIdRoute: typeof AppSubjectsSubjectIdChapterIdRoute
+  AppSubjectsSubjectIdIndexRoute: typeof AppSubjectsSubjectIdIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -517,6 +579,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppHomeRoute: AppHomeRoute,
   AppPracticeRoute: AppPracticeRoute,
   AppProfileRoute: AppProfileRoute,
+  AppSubjectsIndexRoute: AppSubjectsIndexRoute,
+  AppSubjectsSubjectIdChapterIdRoute: AppSubjectsSubjectIdChapterIdRoute,
+  AppSubjectsSubjectIdIndexRoute: AppSubjectsSubjectIdIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
