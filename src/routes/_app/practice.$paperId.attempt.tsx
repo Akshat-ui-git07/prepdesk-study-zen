@@ -119,8 +119,8 @@ function AttemptPage() {
         total: result.total,
         percentage: result.percentage,
         time_taken_seconds: timeTaken,
-        answers_json: answers as unknown as Record<string, unknown>,
-        breakdown_json: result.breakdown as unknown as Record<string, unknown>,
+        answers_json: answers as never,
+        breakdown_json: result.breakdown as never,
       })
       .select("id")
       .single();
