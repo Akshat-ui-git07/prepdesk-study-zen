@@ -39,6 +39,7 @@ import { Route as AppSubjectsSubjectIdIndexRouteImport } from './routes/_app/sub
 import { Route as AppPracticePaperIdIndexRouteImport } from './routes/_app/practice.$paperId.index'
 import { Route as AppSubjectsSubjectIdChapterIdRouteImport } from './routes/_app/subjects.$subjectId.$chapterId'
 import { Route as AppPracticePaperIdAttemptRouteImport } from './routes/_app/practice.$paperId.attempt'
+import { Route as AppPracticePaperIdResultsAttemptIdRouteImport } from './routes/_app/practice.$paperId.results.$attemptId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -193,6 +194,12 @@ const AppPracticePaperIdAttemptRoute =
     path: '/practice/$paperId/attempt',
     getParentRoute: () => AppRoute,
   } as any)
+const AppPracticePaperIdResultsAttemptIdRoute =
+  AppPracticePaperIdResultsAttemptIdRouteImport.update({
+    id: '/practice/$paperId/results/$attemptId',
+    path: '/practice/$paperId/results/$attemptId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
   '/practice/$paperId/': typeof AppPracticePaperIdIndexRoute
   '/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
+  '/practice/$paperId/results/$attemptId': typeof AppPracticePaperIdResultsAttemptIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -252,6 +260,7 @@ export interface FileRoutesByTo {
   '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
   '/practice/$paperId': typeof AppPracticePaperIdIndexRoute
   '/subjects/$subjectId': typeof AppSubjectsSubjectIdIndexRoute
+  '/practice/$paperId/results/$attemptId': typeof AppPracticePaperIdResultsAttemptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -285,6 +294,7 @@ export interface FileRoutesById {
   '/_app/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
   '/_app/practice/$paperId/': typeof AppPracticePaperIdIndexRoute
   '/_app/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
+  '/_app/practice/$paperId/results/$attemptId': typeof AppPracticePaperIdResultsAttemptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -317,6 +327,7 @@ export interface FileRouteTypes {
     | '/subjects/$subjectId/$chapterId'
     | '/practice/$paperId/'
     | '/subjects/$subjectId/'
+    | '/practice/$paperId/results/$attemptId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -346,6 +357,7 @@ export interface FileRouteTypes {
     | '/subjects/$subjectId/$chapterId'
     | '/practice/$paperId'
     | '/subjects/$subjectId'
+    | '/practice/$paperId/results/$attemptId'
   id:
     | '__root__'
     | '/'
@@ -378,6 +390,7 @@ export interface FileRouteTypes {
     | '/_app/subjects/$subjectId/$chapterId'
     | '/_app/practice/$paperId/'
     | '/_app/subjects/$subjectId/'
+    | '/_app/practice/$paperId/results/$attemptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -600,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPracticePaperIdAttemptRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/practice/$paperId/results/$attemptId': {
+      id: '/_app/practice/$paperId/results/$attemptId'
+      path: '/practice/$paperId/results/$attemptId'
+      fullPath: '/practice/$paperId/results/$attemptId'
+      preLoaderRoute: typeof AppPracticePaperIdResultsAttemptIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -613,6 +633,7 @@ interface AppRouteChildren {
   AppSubjectsSubjectIdChapterIdRoute: typeof AppSubjectsSubjectIdChapterIdRoute
   AppPracticePaperIdIndexRoute: typeof AppPracticePaperIdIndexRoute
   AppSubjectsSubjectIdIndexRoute: typeof AppSubjectsSubjectIdIndexRoute
+  AppPracticePaperIdResultsAttemptIdRoute: typeof AppPracticePaperIdResultsAttemptIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -625,6 +646,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppSubjectsSubjectIdChapterIdRoute: AppSubjectsSubjectIdChapterIdRoute,
   AppPracticePaperIdIndexRoute: AppPracticePaperIdIndexRoute,
   AppSubjectsSubjectIdIndexRoute: AppSubjectsSubjectIdIndexRoute,
+  AppPracticePaperIdResultsAttemptIdRoute:
+    AppPracticePaperIdResultsAttemptIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -689,3 +712,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
