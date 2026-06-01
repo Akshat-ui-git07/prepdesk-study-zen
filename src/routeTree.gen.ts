@@ -36,6 +36,7 @@ import { Route as AdminPanelDashboardRouteImport } from './routes/admin/_panel/d
 import { Route as AdminPanelContributionsRouteImport } from './routes/admin/_panel/contributions'
 import { Route as AdminPanelChaptersRouteImport } from './routes/admin/_panel/chapters'
 import { Route as AppSubjectsSubjectIdIndexRouteImport } from './routes/_app/subjects.$subjectId.index'
+import { Route as AppPracticePaperIdIndexRouteImport } from './routes/_app/practice.$paperId.index'
 import { Route as AppSubjectsSubjectIdChapterIdRouteImport } from './routes/_app/subjects.$subjectId.$chapterId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -174,6 +175,11 @@ const AppSubjectsSubjectIdIndexRoute =
     path: '/subjects/$subjectId/',
     getParentRoute: () => AppRoute,
   } as any)
+const AppPracticePaperIdIndexRoute = AppPracticePaperIdIndexRouteImport.update({
+  id: '/practice/$paperId/',
+  path: '/practice/$paperId/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSubjectsSubjectIdChapterIdRoute =
   AppSubjectsSubjectIdChapterIdRouteImport.update({
     id: '/subjects/$subjectId/$chapterId',
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/practice/': typeof AppPracticeIndexRoute
   '/subjects/': typeof AppSubjectsIndexRoute
   '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/practice/$paperId/': typeof AppPracticePaperIdIndexRoute
   '/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/practice': typeof AppPracticeIndexRoute
   '/subjects': typeof AppSubjectsIndexRoute
   '/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/practice/$paperId': typeof AppPracticePaperIdIndexRoute
   '/subjects/$subjectId': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRoutesById {
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/_app/practice/': typeof AppPracticeIndexRoute
   '/_app/subjects/': typeof AppSubjectsIndexRoute
   '/_app/subjects/$subjectId/$chapterId': typeof AppSubjectsSubjectIdChapterIdRoute
+  '/_app/practice/$paperId/': typeof AppPracticePaperIdIndexRoute
   '/_app/subjects/$subjectId/': typeof AppSubjectsSubjectIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -295,6 +304,7 @@ export interface FileRouteTypes {
     | '/practice/'
     | '/subjects/'
     | '/subjects/$subjectId/$chapterId'
+    | '/practice/$paperId/'
     | '/subjects/$subjectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -322,6 +332,7 @@ export interface FileRouteTypes {
     | '/practice'
     | '/subjects'
     | '/subjects/$subjectId/$chapterId'
+    | '/practice/$paperId'
     | '/subjects/$subjectId'
   id:
     | '__root__'
@@ -352,6 +363,7 @@ export interface FileRouteTypes {
     | '/_app/practice/'
     | '/_app/subjects/'
     | '/_app/subjects/$subjectId/$chapterId'
+    | '/_app/practice/$paperId/'
     | '/_app/subjects/$subjectId/'
   fileRoutesById: FileRoutesById
 }
@@ -554,6 +566,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubjectsSubjectIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/practice/$paperId/': {
+      id: '/_app/practice/$paperId/'
+      path: '/practice/$paperId'
+      fullPath: '/practice/$paperId/'
+      preLoaderRoute: typeof AppPracticePaperIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/subjects/$subjectId/$chapterId': {
       id: '/_app/subjects/$subjectId/$chapterId'
       path: '/subjects/$subjectId/$chapterId'
@@ -571,6 +590,7 @@ interface AppRouteChildren {
   AppPracticeIndexRoute: typeof AppPracticeIndexRoute
   AppSubjectsIndexRoute: typeof AppSubjectsIndexRoute
   AppSubjectsSubjectIdChapterIdRoute: typeof AppSubjectsSubjectIdChapterIdRoute
+  AppPracticePaperIdIndexRoute: typeof AppPracticePaperIdIndexRoute
   AppSubjectsSubjectIdIndexRoute: typeof AppSubjectsSubjectIdIndexRoute
 }
 
@@ -581,6 +601,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPracticeIndexRoute: AppPracticeIndexRoute,
   AppSubjectsIndexRoute: AppSubjectsIndexRoute,
   AppSubjectsSubjectIdChapterIdRoute: AppSubjectsSubjectIdChapterIdRoute,
+  AppPracticePaperIdIndexRoute: AppPracticePaperIdIndexRoute,
   AppSubjectsSubjectIdIndexRoute: AppSubjectsSubjectIdIndexRoute,
 }
 
