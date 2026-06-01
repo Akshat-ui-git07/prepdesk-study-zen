@@ -100,7 +100,7 @@ function AttemptPage() {
     setAnswers((prev) => ({ ...prev, [current.id]: { ...prev[current.id], marked: !prev[current.id]?.marked } }));
   }
 
-  async function handleSubmit(auto = false) {
+  async function handleSubmit(_auto = false) {
     if (submitting) return;
     setSubmitting(true);
     const result = scoreAttempt(questions, answers);
