@@ -304,6 +304,56 @@ export type Database = {
           },
         ]
       }
+      practice_attempts: {
+        Row: {
+          answers_json: Json
+          breakdown_json: Json
+          created_at: string
+          id: string
+          paper_id: string
+          percentage: number
+          score: number
+          submitted_at: string
+          time_taken_seconds: number
+          total: number
+          user_id: string
+        }
+        Insert: {
+          answers_json?: Json
+          breakdown_json?: Json
+          created_at?: string
+          id?: string
+          paper_id: string
+          percentage?: number
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          total?: number
+          user_id: string
+        }
+        Update: {
+          answers_json?: Json
+          breakdown_json?: Json
+          created_at?: string
+          id?: string
+          paper_id?: string
+          percentage?: number
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_attempts_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "practice_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       practice_papers: {
         Row: {
           created_at: string
