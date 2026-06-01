@@ -17,7 +17,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminPanelRouteImport } from './routes/admin/_panel'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
-import { Route as AppPracticeRouteImport } from './routes/_app/practice'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppContributeRouteImport } from './routes/_app/contribute'
 import { Route as AppSubjectsIndexRouteImport } from './routes/_app/subjects.index'
@@ -74,11 +73,6 @@ const AdminPanelRoute = AdminPanelRouteImport.update({
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPracticeRoute = AppPracticeRouteImport.update({
-  id: '/practice',
-  path: '/practice',
   getParentRoute: () => AppRoute,
 } as any)
 const AppHomeRoute = AppHomeRouteImport.update({
@@ -188,7 +182,6 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/contribute': typeof AppContributeRoute
   '/home': typeof AppHomeRoute
-  '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
@@ -215,7 +208,6 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/contribute': typeof AppContributeRoute
   '/home': typeof AppHomeRoute
-  '/practice': typeof AppPracticeRoute
   '/profile': typeof AppProfileRoute
   '/admin': typeof AdminIndexRoute
   '/admin/chapters': typeof AdminPanelChaptersRoute
@@ -245,7 +237,6 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_app/contribute': typeof AppContributeRoute
   '/_app/home': typeof AppHomeRoute
-  '/_app/practice': typeof AppPracticeRoute
   '/_app/profile': typeof AppProfileRoute
   '/admin/_panel': typeof AdminPanelRouteWithChildren
   '/admin/': typeof AdminIndexRoute
@@ -276,7 +267,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/contribute'
     | '/home'
-    | '/practice'
     | '/profile'
     | '/admin/'
     | '/admin/chapters'
@@ -303,7 +293,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/contribute'
     | '/home'
-    | '/practice'
     | '/profile'
     | '/admin'
     | '/admin/chapters'
@@ -332,7 +321,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_app/contribute'
     | '/_app/home'
-    | '/_app/practice'
     | '/_app/profile'
     | '/admin/_panel'
     | '/admin/'
@@ -419,13 +407,6 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AppProfileRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/practice': {
-      id: '/_app/practice'
-      path: '/practice'
-      fullPath: '/practice'
-      preLoaderRoute: typeof AppPracticeRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/home': {
@@ -567,7 +548,6 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppContributeRoute: typeof AppContributeRoute
   AppHomeRoute: typeof AppHomeRoute
-  AppPracticeRoute: typeof AppPracticeRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSubjectsIndexRoute: typeof AppSubjectsIndexRoute
   AppSubjectsSubjectIdChapterIdRoute: typeof AppSubjectsSubjectIdChapterIdRoute
@@ -577,7 +557,6 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppContributeRoute: AppContributeRoute,
   AppHomeRoute: AppHomeRoute,
-  AppPracticeRoute: AppPracticeRoute,
   AppProfileRoute: AppProfileRoute,
   AppSubjectsIndexRoute: AppSubjectsIndexRoute,
   AppSubjectsSubjectIdChapterIdRoute: AppSubjectsSubjectIdChapterIdRoute,
@@ -646,3 +625,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
