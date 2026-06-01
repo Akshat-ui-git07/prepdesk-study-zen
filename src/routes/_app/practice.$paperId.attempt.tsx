@@ -132,7 +132,6 @@ function AttemptPage() {
       to: "/practice/$paperId/results/$attemptId",
       params: { paperId, attemptId: data.id },
       replace: true,
-      search: auto ? { auto: 1 } : undefined,
     });
   }
 
