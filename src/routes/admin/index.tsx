@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
@@ -6,8 +6,28 @@ import { Loader2, Shield } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const isAdmin = await userHasAdminRole(user.id);
+    if (isAdmin) throw redirect({ to: "/admin/dashboard" });
+  },
   component: AdminLogin,
 });
+
+async function userHasAdminRole(userId: string) {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+
+  if (error) throw error;
+  return data?.role === "admin";
+}
 
 function AdminLogin() {
   const nav = useNavigate();
@@ -18,22 +38,30 @@ function AdminLogin() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
     if (error || !data.user) {
       setLoading(false);
       toast.error(error?.message ?? "Sign-in failed");
       return;
     }
-    const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
-    const isAdmin = roles?.some((r) => r.role === "admin");
-    setLoading(false);
-    if (!isAdmin) {
-      await supabase.auth.signOut();
-      toast.error("This account is not an admin");
-      return;
+
+    try {
+      const isAdmin = await userHasAdminRole(data.user.id);
+      if (!isAdmin) {
+        await supabase.auth.signOut();
+        toast.error("This account is not an admin");
+        return;
+      }
+
+      toast.success("Welcome, admin");
+      nav({ to: "/admin/dashboard" });
+    } catch (roleError) {
+      console.error("Admin role check failed", roleError);
+      toast.error("Could not verify admin access. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    toast.success("Welcome, admin");
-    nav({ to: "/admin/dashboard" });
   };
 
   return (
