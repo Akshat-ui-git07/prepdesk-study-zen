@@ -9,13 +9,20 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/_panel")({
+  ssr: false,
   beforeLoad: async () => {
-    if (typeof window === "undefined") return;
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) throw redirect({ to: "/admin" });
-    const { data: roles } = await supabase
-      .from("user_roles").select("role").eq("user_id", session.user.id);
-    if (!roles?.some((r) => r.role === "admin")) throw redirect({ to: "/admin" });
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) throw redirect({ to: "/admin" });
+
+    const { data: role, error: roleError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (roleError) throw roleError;
+    if (role?.role !== "admin") throw redirect({ to: "/admin" });
   },
   component: AdminPanel,
 });
