@@ -23,8 +23,23 @@ type Chapter = { id: string; number: number; name: string; subject_id: string };
 type FileItem = { id: string; file_url: string; title?: string | null };
 type ImpQ = { id: string; question: string; difficulty: "easy" | "medium" | "hard" };
 
-function openFile(url: string) {
-  if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
+async function openFile(urlOrPath: string) {
+  if (typeof window === "undefined" || !urlOrPath) return;
+  let target = urlOrPath;
+  // If it's not a full URL, treat it as a path inside the 'content' storage bucket
+  if (!/^https?:\/\//i.test(urlOrPath)) {
+    // Strip optional "content/" prefix if a path was stored that way
+    const path = urlOrPath.replace(/^\/+/, "").replace(/^content\//, "");
+    const { data, error } = await supabase.storage
+      .from("content")
+      .createSignedUrl(path, 3600);
+    if (error || !data?.signedUrl) {
+      console.error("Failed to create signed URL", error);
+      return;
+    }
+    target = data.signedUrl;
+  }
+  window.open(target, "_blank", "noopener,noreferrer");
 }
 
 function ChapterDetail() {
