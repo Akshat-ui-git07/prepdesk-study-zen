@@ -14,6 +14,7 @@ type NextExam = { exam_name: string; date: string };
 
 function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [loadedProfile, setLoadedProfile] = useState(false);
   const [stats, setStats] = useState<{ chapters: number; papers: number } | null>(null);
   const [nextExam, setNextExam] = useState<NextExam | null | undefined>(undefined);
 
@@ -34,7 +35,20 @@ function Home() {
           .limit(1)
           .maybeSingle(),
       ]);
-      setProfile(p);
+
+      const emailLocal = user.email?.split("@")[0] ?? "";
+      const metaName =
+        (user.user_metadata?.name as string | undefined) ??
+        (user.user_metadata?.full_name as string | undefined) ??
+        "";
+      const resolvedName =
+        (p?.name && p.name.trim()) ||
+        (metaName && metaName.trim()) ||
+        (emailLocal && emailLocal.replace(/[._-]+/g, " ")) ||
+        "Student";
+
+      setProfile({ name: resolvedName, section: p?.section ?? "—" });
+      setLoadedProfile(true);
       setStats({ chapters: cCount ?? 0, papers: pCount ?? 0 });
       setNextExam(exam ?? null);
     })();
@@ -45,14 +59,16 @@ function Home() {
     ? Math.max(0, Math.ceil((examDate.getTime() - Date.now()) / 86400000))
     : null;
 
+  const firstName = profile?.name?.split(" ")[0] ?? "";
+
   return (
     <main className="px-5 pt-10 pb-6 animate-[fade-in_0.4s_ease-out]">
       <header className="flex items-start justify-between mb-7">
         <div>
           <p className="text-sm text-muted-foreground">Welcome back,</p>
-          {profile ? (
+          {loadedProfile && profile ? (
             <h1 className="text-2xl font-bold tracking-tight mt-0.5">
-              {profile.name.split(" ")[0]}
+              {firstName}
               <span className="ml-2 text-xs font-medium text-muted-foreground align-middle px-2 py-0.5 rounded-full bg-surface border border-border">
                 Section {profile.section}
               </span>
@@ -66,10 +82,11 @@ function Home() {
             {new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
           </p>
           <div className="h-11 w-11 rounded-full gradient-primary grid place-items-center text-primary-foreground font-semibold shadow-glow">
-            {profile?.name?.[0]?.toUpperCase() ?? "·"}
+            {firstName?.[0]?.toUpperCase() ?? "·"}
           </div>
         </div>
       </header>
+
 
       {/* Exam countdown */}
       <section
