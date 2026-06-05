@@ -140,7 +140,7 @@ function Signup() {
           <input
             value={form.invite_code}
             onChange={(e) => setForm({ ...form, invite_code: e.target.value.toUpperCase() })}
-            placeholder="PREP-2025-XXXX"
+            placeholder="PREP-2026-XXXXXX"
             className={`${inputClass} font-mono tracking-wider`}
           />
         </Field>
