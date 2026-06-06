@@ -158,7 +158,7 @@ function ChapterDetail() {
           render={(f) => (
             <FileCard
               key={f.id}
-              title="Formula sheet"
+              title={f.title || "Formula sheet"}
               hint="Quick reference"
               onClick={() => openFile(f.file_url)}
             />
