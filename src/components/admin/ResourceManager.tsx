@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2, X, Upload, FileCheck2 } from "lucide-react";
 import { Skeleton } from "@/components/Skeleton";
 
 export type FieldType = "text" | "textarea" | "number" | "select" | "datetime" | "json" | "file";
