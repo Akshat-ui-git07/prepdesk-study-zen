@@ -71,12 +71,14 @@ function ChapterDetail() {
         setSubjectName(s?.name ?? null);
       }
 
+      const subjectFilter = ch?.subject_id ? `chapter_id.eq.${chapterId},subject_id.eq.${ch.subject_id}` : `chapter_id.eq.${chapterId}`;
+
       const [nRes, fRes, iRes, wRes, oRes, bRes] = await Promise.all([
-        supabase.from("notes").select("id, title, file_url").eq("chapter_id", chapterId).order("created_at", { ascending: false }),
-        supabase.from("formula_sheets").select("id, file_url").eq("chapter_id", chapterId).order("created_at", { ascending: false }),
+        supabase.from("notes").select("id, title, file_url").or(subjectFilter).order("created_at", { ascending: false }),
+        supabase.from("formula_sheets").select("id, title, file_url").or(subjectFilter).order("created_at", { ascending: false }),
         supabase.from("important_questions").select("id, question, difficulty").eq("chapter_id", chapterId).order("created_at", { ascending: false }),
-        supabase.from("worksheets").select("id, file_url").eq("chapter_id", chapterId).order("created_at", { ascending: false }),
-        supabase.from("one_pagers").select("id, file_url").eq("chapter_id", chapterId).order("created_at", { ascending: false }),
+        supabase.from("worksheets").select("id, title, file_url").or(subjectFilter).order("created_at", { ascending: false }),
+        supabase.from("one_pagers").select("id, title, file_url").or(subjectFilter).order("created_at", { ascending: false }),
         user ? supabase.from("bookmarks").select("question_id").eq("user_id", user.id) : Promise.resolve({ data: [] as any }),
       ]);
 
