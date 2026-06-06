@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { Skeleton } from "@/components/Skeleton";
 
-export type FieldType = "text" | "textarea" | "number" | "select" | "datetime" | "json";
+export type FieldType = "text" | "textarea" | "number" | "select" | "datetime" | "json" | "file";
 
 export type Field = {
   name: string;
