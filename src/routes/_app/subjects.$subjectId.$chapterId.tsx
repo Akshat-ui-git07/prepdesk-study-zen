@@ -204,7 +204,7 @@ function ChapterDetail() {
           render={(o) => (
             <FileCard
               key={o.id}
-              title="One-pager"
+              title={o.title || "One-pager"}
               hint="Revision summary"
               onClick={() => openFile(o.file_url)}
             />
