@@ -189,7 +189,7 @@ function ChapterDetail() {
           render={(w) => (
             <FileCard
               key={w.id}
-              title="Worksheet"
+              title={w.title || "Worksheet"}
               hint="Practice set · Tap to open"
               onClick={() => openFile(w.file_url)}
             />
