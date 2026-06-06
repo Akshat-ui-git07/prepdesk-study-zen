@@ -12,18 +12,17 @@ function PastPapersPage() {
     <ResourceManager
       table="past_papers"
       title="Past papers"
-      orderBy={{ column: "year", ascending: false }}
+      description="Upload past papers (PDF)."
+      orderBy={{ column: "created_at", ascending: false }}
       fields={[
         { name: "subject_id", label: "Subject", type: "select", required: true, options: opts },
-        { name: "year", label: "Year", type: "number", required: true, placeholder: "2025" },
-        { name: "school_name", label: "School", type: "text", required: true },
-        { name: "file_url", label: "File URL", type: "text", required: true, placeholder: "https://..." },
+        { name: "title", label: "Title", type: "text", required: true, placeholder: "e.g. 2024 Physics Paper" },
+        { name: "file_url", label: "File", type: "file", required: true },
       ]}
       columns={[
-        { key: "year", label: "Year" },
+        { key: "title", label: "Title" },
         { key: "subject_id", label: "Subject", render: (r) => map[r.subject_id] ?? "—" },
-        { key: "school_name", label: "School" },
-        { key: "file_url", label: "File", render: (r) => <a href={r.file_url} target="_blank" rel="noreferrer" className="text-primary hover:underline text-xs">Open</a> },
+        { key: "file_url", label: "File", render: (r) => <span className="text-xs text-muted-foreground truncate max-w-[200px] inline-block">{r.file_url?.split("/").pop()}</span> },
       ]}
     />
   );

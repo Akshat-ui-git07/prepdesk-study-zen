@@ -1,10 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2, X, Upload, FileCheck2 } from "lucide-react";
 import { Skeleton } from "@/components/Skeleton";
 
-export type FieldType = "text" | "textarea" | "number" | "select" | "datetime" | "json";
+export type FieldType = "text" | "textarea" | "number" | "select" | "datetime" | "json" | "file";
 
 export type Field = {
   name: string;
@@ -237,6 +237,11 @@ function RecordDialog({
                     <option value="">— select —</option>
                     {f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
+                ) : f.type === "file" ? (
+                  <FileUploadInput
+                    value={values[f.name] ?? ""}
+                    onChange={(v) => setValues({ ...values, [f.name]: v })}
+                  />
                 ) : (
                   <input
                     type={f.type === "datetime" ? "datetime-local" : f.type === "number" ? "number" : "text"}
@@ -262,6 +267,76 @@ function RecordDialog({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function FileUploadInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const inputId = `file-${Math.random().toString(36).slice(2)}`;
+
+  const handleFile = async (file: File) => {
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
+      const { error } = await supabase.storage.from("content").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type || undefined,
+      });
+      if (error) throw error;
+      onChange(path);
+      toast.success("File uploaded");
+    } catch (e: any) {
+      toast.error(e.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const filename = value ? value.split("/").pop() : null;
+
+  return (
+    <div className="space-y-2">
+      <label
+        htmlFor={inputId}
+        className={`flex items-center justify-center gap-2 h-24 rounded-xl border-2 border-dashed cursor-pointer transition-all ${
+          value
+            ? "border-primary/50 bg-primary/5"
+            : "border-border hover:border-primary/40 hover:bg-surface-elevated/50"
+        } ${uploading ? "opacity-60 pointer-events-none" : ""}`}
+      >
+        {uploading ? (
+          <>
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <span className="text-sm text-muted-foreground">Uploading…</span>
+          </>
+        ) : value ? (
+          <div className="text-center px-4">
+            <FileCheck2 className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-xs font-medium truncate max-w-[260px]">{filename}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Tap to replace</p>
+          </div>
+        ) : (
+          <>
+            <Upload className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium">Choose file to upload</span>
+          </>
+        )}
+      </label>
+      <input
+        id={inputId}
+        type="file"
+        className="hidden"
+        accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handleFile(f);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 }

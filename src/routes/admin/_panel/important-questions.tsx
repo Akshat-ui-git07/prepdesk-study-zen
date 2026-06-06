@@ -1,21 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ResourceManager } from "@/components/admin/ResourceManager";
-import { useChapters } from "@/components/admin/useSubjectChapterOptions";
+import { useSubjects, useChapters } from "@/components/admin/useSubjectChapterOptions";
 
 export const Route = createFileRoute("/admin/_panel/important-questions")({
   component: ImpQPage,
 });
 
 function ImpQPage() {
-  const { opts, map } = useChapters();
+  const { opts: subjectOpts, map: subjectMap } = useSubjects();
+  const { opts: chapterOpts, map: chapterMap } = useChapters();
   return (
     <ResourceManager
       table="important_questions"
       title="Important questions"
       orderBy={{ column: "created_at", ascending: false }}
       fields={[
-        { name: "chapter_id", label: "Chapter", type: "select", required: true, options: opts },
+        { name: "subject_id", label: "Subject", type: "select", required: true, options: subjectOpts },
+        { name: "chapter_id", label: "Chapter", type: "select", required: true, options: chapterOpts },
         { name: "question", label: "Question", type: "textarea", required: true },
+        { name: "answer", label: "Answer", type: "textarea", required: true },
         {
           name: "difficulty", label: "Difficulty", type: "select", required: true, defaultValue: "medium",
           options: [
@@ -27,7 +30,8 @@ function ImpQPage() {
       ]}
       columns={[
         { key: "question", label: "Question", render: (r) => <div className="max-w-md line-clamp-2">{r.question}</div> },
-        { key: "chapter_id", label: "Chapter", render: (r) => map[r.chapter_id] ?? "—" },
+        { key: "subject_id", label: "Subject", render: (r) => subjectMap[r.subject_id] ?? "—" },
+        { key: "chapter_id", label: "Chapter", render: (r) => chapterMap[r.chapter_id] ?? "—" },
         { key: "difficulty", label: "Difficulty", render: (r) => (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider bg-surface-elevated border border-border/60">
             {r.difficulty}
