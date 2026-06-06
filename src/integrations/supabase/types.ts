@@ -128,22 +128,28 @@ export type Database = {
       }
       formula_sheets: {
         Row: {
-          chapter_id: string
+          chapter_id: string | null
           created_at: string
           file_url: string
           id: string
+          subject_id: string | null
+          title: string | null
         }
         Insert: {
-          chapter_id: string
+          chapter_id?: string | null
           created_at?: string
           file_url: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Update: {
-          chapter_id?: string
+          chapter_id?: string | null
           created_at?: string
           file_url?: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Relationships: [
           {
@@ -157,25 +163,31 @@ export type Database = {
       }
       important_questions: {
         Row: {
+          answer: string | null
           chapter_id: string
           created_at: string
           difficulty: string
           id: string
           question: string
+          subject_id: string | null
         }
         Insert: {
+          answer?: string | null
           chapter_id: string
           created_at?: string
           difficulty?: string
           id?: string
           question: string
+          subject_id?: string | null
         }
         Update: {
+          answer?: string | null
           chapter_id?: string
           created_at?: string
           difficulty?: string
           id?: string
           question?: string
+          subject_id?: string | null
         }
         Relationships: [
           {
@@ -210,24 +222,27 @@ export type Database = {
       }
       notes: {
         Row: {
-          chapter_id: string
+          chapter_id: string | null
           created_at: string
           file_url: string
           id: string
+          subject_id: string | null
           title: string
         }
         Insert: {
-          chapter_id: string
+          chapter_id?: string | null
           created_at?: string
           file_url: string
           id?: string
+          subject_id?: string | null
           title: string
         }
         Update: {
-          chapter_id?: string
+          chapter_id?: string | null
           created_at?: string
           file_url?: string
           id?: string
+          subject_id?: string | null
           title?: string
         }
         Relationships: [
@@ -242,22 +257,28 @@ export type Database = {
       }
       one_pagers: {
         Row: {
-          chapter_id: string
+          chapter_id: string | null
           created_at: string
           file_url: string
           id: string
+          subject_id: string | null
+          title: string | null
         }
         Insert: {
-          chapter_id: string
+          chapter_id?: string | null
           created_at?: string
           file_url: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Update: {
-          chapter_id?: string
+          chapter_id?: string | null
           created_at?: string
           file_url?: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Relationships: [
           {
@@ -274,25 +295,28 @@ export type Database = {
           created_at: string
           file_url: string
           id: string
-          school_name: string
+          school_name: string | null
           subject_id: string
-          year: number
+          title: string | null
+          year: number | null
         }
         Insert: {
           created_at?: string
           file_url: string
           id?: string
-          school_name: string
+          school_name?: string | null
           subject_id: string
-          year: number
+          title?: string | null
+          year?: number | null
         }
         Update: {
           created_at?: string
           file_url?: string
           id?: string
-          school_name?: string
+          school_name?: string | null
           subject_id?: string
-          year?: number
+          title?: string | null
+          year?: number | null
         }
         Relationships: [
           {
@@ -360,6 +384,7 @@ export type Database = {
           id: string
           questions_json: Json
           subject_id: string
+          time_limit_minutes: number
           title: string
         }
         Insert: {
@@ -367,6 +392,7 @@ export type Database = {
           id?: string
           questions_json?: Json
           subject_id: string
+          time_limit_minutes?: number
           title: string
         }
         Update: {
@@ -374,6 +400,7 @@ export type Database = {
           id?: string
           questions_json?: Json
           subject_id?: string
+          time_limit_minutes?: number
           title?: string
         }
         Relationships: [
@@ -448,22 +475,28 @@ export type Database = {
       }
       worksheets: {
         Row: {
-          chapter_id: string
+          chapter_id: string | null
           created_at: string
           file_url: string
           id: string
+          subject_id: string | null
+          title: string | null
         }
         Insert: {
-          chapter_id: string
+          chapter_id?: string | null
           created_at?: string
           file_url: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Update: {
-          chapter_id?: string
+          chapter_id?: string | null
           created_at?: string
           file_url?: string
           id?: string
+          subject_id?: string | null
+          title?: string | null
         }
         Relationships: [
           {
