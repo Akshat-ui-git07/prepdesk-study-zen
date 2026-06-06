@@ -237,6 +237,11 @@ function RecordDialog({
                     <option value="">— select —</option>
                     {f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
+                ) : f.type === "file" ? (
+                  <FileUploadInput
+                    value={values[f.name] ?? ""}
+                    onChange={(v) => setValues({ ...values, [f.name]: v })}
+                  />
                 ) : (
                   <input
                     type={f.type === "datetime" ? "datetime-local" : f.type === "number" ? "number" : "text"}
